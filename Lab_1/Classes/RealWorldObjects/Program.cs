@@ -10,7 +10,7 @@ class Classes_first
         var units = GetUnits();
         var factories = GetFactories();
 
-        int choice = -1; // переменная для выбора действий
+        int choice = -9; // переменная для выбора действий
 
 
         while (choice != 0) // Зацикливаем программу, пока пользователь не выберет выход (0)
@@ -38,15 +38,16 @@ class Classes_first
                 case 1:
                     // Поиск элемента по названию
                     Console.WriteLine("Введите имя резервуара для поиска:");
-                    string searchTankName = Console.ReadLine();
-                    var foundTank = FindTank(tanks, searchTankName);
+
+                    string searchTankName = Console.ReadLine(); // имя искомого резервуара
+                    var foundTank = FindTank(tanks, searchTankName); // поиск по имени
 
                     if (foundTank != null)
                     {
-                        var unit = FindUnit(units, tanks, foundTank.Name);
+                        var unit = FindUnit(units, tanks, foundTank.Tank_Name);
                         var factoryOfUnit = FindFactory(factories, unit);
 
-                        Console.WriteLine($"Резервуар {foundTank.Name} принадлежит установке {unit.Name}, который принадлежит заводу {factoryOfUnit.Name}");
+                        Console.WriteLine($"Резервуар {foundTank.Tank_Name} принадлежит установке {unit.Unit_Name}, который принадлежит заводу {factoryOfUnit.Factory_Name}");
                     }
                     else
                     {
@@ -63,9 +64,9 @@ class Classes_first
                     Console.WriteLine("Вывод всех резервуаров:");
                     foreach (var tank in tanks)
                     {
-                        var unit = FindUnit(units, tanks, tank.Name);
-                        var factoryOfUnit = FindFactory(factories, unit);
-                        Console.WriteLine($"Резервуар {tank.Name} принадлежит установке {unit.Name}, который принадлежит заводу {factoryOfUnit.Name}");
+                        var unit = FindUnit(units, tanks, tank.Tank_Name); // поиск установки по резервуару
+                        var factoryOfUnit = FindFactory(factories, unit); // поиск завода по установке
+                        Console.WriteLine($"Резервуар {tank.Tank_Name} принадлежит установке {unit.Unit_Name}, который принадлежит заводу {factoryOfUnit.Factory_Name}");
                     }
                     break;
                     
@@ -116,7 +117,7 @@ class Classes_first
     {
         foreach (var tank in tanks)
         {
-            if (tank.Name == tankName)
+            if (tank.Tank_Name == tankName)
             {
                 return tank;
             }
@@ -129,11 +130,11 @@ class Classes_first
     {
         foreach (var tank in tanks)
         {
-            if (tank.Name == unitName)
+            if (tank.Tank_Name == unitName)
             {
                 foreach (var unit in units)
                 {
-                    if (unit.Id == tank.UnitId)
+                    if (unit.Unit_Id == tank.UnitId)
                     {
                         return unit;
                     }
@@ -148,7 +149,7 @@ class Classes_first
     {
         foreach (var factory in factories)
         {
-            if (factory.Id == unit.FactoryId)
+            if (factory.Factory_Id == unit.FactoryId)
             {
                 return factory;
             }
@@ -163,9 +164,8 @@ class Classes_first
 
         foreach (var tank in tanks)
         {
-            totalVolume += tank.Volume;
+            totalVolume += tank.Tank_Volume;
         }
-
         return totalVolume;
     }
 }
@@ -173,16 +173,16 @@ class Classes_first
 //класс представляющий установку
 public class Unit
 {
-    public int Id { get; }
-    public string Name { get; }
-    public string Description { get; }
+    public int Unit_Id { get; }
+    public string Unit_Name { get; }
+    public string Unit_Desc { get; }
     public int FactoryId { get; }
-
+    // конструктор с параметрами
     public Unit(int id, string name, string description, int factoryId)
     {
-        Id = id;
-        Name = name;
-        Description = description;
+        Unit_Id = id;
+        Unit_Name = name;
+        Unit_Desc = description;
         FactoryId = factoryId;
     }
 }
@@ -190,35 +190,35 @@ public class Unit
 // Класс, представляющий завод
 public class Factory
 {
-    public int Id { get; }
-    public string Name { get; }
-    public string Description { get; }
-
+    public int Factory_Id { get; }
+    public string Factory_Name { get; }
+    public string Factory_Desc { get; }
+    // конструктор с параметрами
     public Factory(int id, string name, string description)
     {
-        Id = id;
-        Name = name;
-        Description = description;
+        Factory_Id = id;
+        Factory_Name = name;
+        Factory_Desc = description;
     }
 }
 
 // Класс, представляющий резервуар
 public class Tank
 {
-    public int Id { get; }
-    public string Name { get; }
-    public string Description { get; }
-    public int Volume { get; }
-    public int MaxVolume { get; }
+    public int Tank_Id { get; }
+    public string Tank_Name { get;}
+    public string Tank_Desc { get;}
+    public int Tank_Volume { get; }
+    public int Tank_MaxVolume { get; }
     public int UnitId { get; }
-
+    // конструктор с параметрами
     public Tank(int id, string name, string description, int volume, int maxVolume, int unitId)
     {
-        Id = id;
-        Name = name;
-        Description = description;
-        Volume = volume;
-        MaxVolume = maxVolume;
+        Tank_Id = id;
+        Tank_Name = name;
+        Tank_Desc = description;
+        Tank_Volume = volume;
+        Tank_MaxVolume = maxVolume;
         UnitId = unitId;
     }
 }
