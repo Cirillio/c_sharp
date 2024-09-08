@@ -1,15 +1,16 @@
 ﻿using GuessTheNumber;
 using System;
 
-namespace GuessGame
+namespace GuessTheNumber
 {
-    class Program
+    class GuessGame
     {
         static void Main(string[] args)
         {
-            Game NewGame = new();
-            NewGame.StartGame();
-            Console.WriteLine($"{NewGame.MinNumber} {NewGame.MaxNumber} {NewGame.GameDifficulty.DifficultyID}");
+
+            Game GuessTheNumber = new();
+
+            GuessTheNumber.PlayGame();
 
 
         }

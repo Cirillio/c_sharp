@@ -10,7 +10,6 @@ namespace GuessTheNumber
     internal class DifficultyLevel
     {
         public int DifficultyID { get; set; }
-        private static int _nextID = 1;
         public string Name { get; set; }
         public int Attempts { get; set; }
         public int Clues { get; set; }
@@ -23,43 +22,34 @@ namespace GuessTheNumber
             Clues = 50;
         }
 
-        public DifficultyLevel(string name, int attempts, int clues)
+        public DifficultyLevel(int difficultyID)
         {
-            DifficultyID = _nextID++;
-            Name = name;
-            Attempts = attempts;
-            Clues = clues;
-        }
-
-        public void SetDifficulty(int DifficultyID)
-        {
-            switch(DifficultyID)
+            switch (difficultyID)
             {
                 case 1:
-                    this.Name = "Easy";
-                    this.Attempts = 100;
-                    this.Clues = 50;
+                    DifficultyID = 1;
+                    Name = "Easy";
+                    Attempts = 100;
+                    Clues = 50;
                     break;
 
                 case 2:
-                    this.Name = "Medium";
-                    this.Attempts = 25;
-                    this.Clues = 5;
+                    DifficultyID = 2;
+                    Name = "Medium";
+                    Attempts = 25;
+                    Clues = 5;
                     break;
 
                 case 3:
-                    this.Name = "Hard";
-                    this.Attempts = 10;
-                    this.Clues = 1;
+                    DifficultyID = 3;
+                    Name = "Hard";
+                    Attempts = 10;
+                    Clues = 1;
                     break;
+
                 default:
-                    break;
+                    throw new InvalidOperationException("Неверный выбор сложности.");
             }
         }
-
-
     }
 }
-
-
-//                    
