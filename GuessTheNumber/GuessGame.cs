@@ -1,5 +1,7 @@
 ﻿using GuessTheNumber;
 using System;
+using GuessTheNumber.Output;
+using GuessTheNumber.Output.Interfaces;
 
 namespace GuessTheNumber
 {
