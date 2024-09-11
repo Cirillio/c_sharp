@@ -65,76 +65,116 @@ namespace GuessTheNumber
             }
         }
 
-        public bool CheckParamInputs()
+        private void PrintWelcome()
         {
             Print?.Print("Нажмите 'Enter' для продолжения");
             ConsoleKeyInfo OK;
-            while (true) {
-            OK = Console.ReadKey();
-                if (OK.Key == ConsoleKey.Enter) {
+            while (true)
+            {
+                OK = Console.ReadKey();
+                if (OK.Key == ConsoleKey.Enter)
+                {
                     break;
-                } else {
+                }
+                else
+                {
                     Print?.PrintError("Нажмите 'Enter' для продолжения");
                 }
             }
+        }
 
-            for (int i = 1; i < 4; i++)
+        private double GetValidBorder(int index)
+        {
+            while (true)
             {
                 try
                 {
-                    switch (i)
-                    {
-                        case 1:
-                            FirstBorder = Convert.ToDouble(TmpValues[i-1]);
-                            break;
-
-                        case 2:
-                            SecondBorder = Convert.ToDouble(TmpValues[i-1]);
-                            break;
-
-                        case 3:
-                            GameDifficulty = new DifficultyLevel(Convert.ToInt32(TmpValues[i-1]));
-                            break;
-
-                        default: break;
-                    };
+                    return Convert.ToDouble(TmpValues[index - 1]);
                 }
                 catch (Exception)
                 {
                     Print?.PrintError("Введите правильное значение");
-                    InputParams(i);
-                    i = 1;
+                    InputParams(index);
                 }
             }
-            if (FirstBorder == SecondBorder)
+        }
+
+        private int GetValidDifficulty(int index)
+        {
+            while (true)
             {
-                Print?.Print("Границы не должны быть равны\n1 - Изменить первую границу.\n2 - Изменить вторую границу.");
+                try
+                {
+                    int Diff = Convert.ToInt32(TmpValues[index - 1]);
+                    DifficultyLevel tmp = new DifficultyLevel(Diff);
+                    return Diff;
+                }
+                catch (Exception)
+                {
+                    Print?.PrintError("Введите правильное значение");
+                    InputParams(index);
+                }
             }
-            while (FirstBorder == SecondBorder) {
-                try {
+        }
+
+        private void ValidateBorders(double first, double second)
+
+        {
+            if (first == second)
+
+            {
+                Print?.Print("Границы не должны быть равными. Попробуйте ещё раз.");
+
+                HandleBorderChange();
+            }
+
+            if (first > second)
+
+            {
+                (first, second) = (second, first);
+            }
+        }
+
+        private void HandleBorderChange()
+        {
+            while (true)
+            {
+                Print?.Print("1 - Изменить первую границу.\n2 - Изменить вторую границу.");
+                try
+                {
                     ConsoleKeyInfo ChangeBorder = Console.ReadKey();
+                    Print?.Print("\n");
                     switch (ChangeBorder.Key)
+
                     {
                         case ConsoleKey.D1:
                             InputParams(1);
-                            FirstBorder = Convert.ToDouble(TmpValues[0]);
+                            FirstBorder = GetValidBorder(1);
                             break;
+
                         case ConsoleKey.D2:
                             InputParams(2);
-                            SecondBorder = Convert.ToDouble(TmpValues[1]);
+                            SecondBorder = GetValidBorder(2);
                             break;
+
                         default:
                             continue;
                     }
                 }
-                catch (Exception error) {
+                catch (Exception error)
+                {
                     Print?.Print(error.Message);
                 }
             }
-            if (FirstBorder > SecondBorder)
-            {
-                (FirstBorder, SecondBorder) = (SecondBorder, FirstBorder);
-            }
+        }
+
+        public bool CheckParamInputs() // теперь надо это разбить на отдельные методы
+        {
+            PrintWelcome();
+            FirstBorder = GetValidBorder(1);
+            SecondBorder = GetValidBorder(2);
+            GameDifficulty = new DifficultyLevel(GetValidDifficulty(3));
+            ValidateBorders(FirstBorder, SecondBorder);
             return true;
         }
     }
