@@ -2,6 +2,10 @@
 using System;
 using GuessTheNumber.Output;
 using GuessTheNumber.Output.Interfaces;
+using GuessTheNumber.Input;
+using GuessTheNumber.Input.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace GuessTheNumber
 {
@@ -9,10 +13,15 @@ namespace GuessTheNumber
     {
         static void Main(string[] args)
         {
+            var services = new ServiceCollection()
+                .AddSingleton<IInputMsg, InputConsole>()
+                .AddSingleton<IOutputMsg, OutPutConsole>()
+                .AddSingleton<GameParams>();
 
-            Game GuessTheNumber = new();
-
-            GuessTheNumber.PlayGame();
+            var serviceProvider = services.BuildServiceProvider();
+            var parameters = serviceProvider.GetService<GameParams>();
+            parameters?.SetParams();
+            Console.WriteLine(parameters?.minNum);
 
 
         }

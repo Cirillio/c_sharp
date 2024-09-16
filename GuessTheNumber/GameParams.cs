@@ -7,175 +7,87 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
+using Microsoft.Extensions.DependencyInjection;
+using GuessTheNumber.Input.Interfaces;
+using GuessTheNumber.Output.Interfaces;
 
 namespace GuessTheNumber
 {
-    internal class GameParams
-
+    internal class GameParams (IInputMsg input, IOutputMsg output)
     {
-        public double FirstBorder { get; set; }
-        public double SecondBorder { get; set; }
-        public DifficultyLevel? GameDifficulty { get; private set; }
+        public int minNum { get; set; }
 
-        public OutPutConsole? Print = new OutPutConsole();
-        public InputConsole? Input = new InputConsole();
+        public int maxNum { get; set; }
 
-        private string?[] TmpValues = new string[3];
+        public int difficultyLevel { get; set; }
 
-        public GameParams()
-        {
-            FirstBorder = 1;
-            SecondBorder = 100;
-            GameDifficulty = new DifficultyLevel(1); // легкий уровень по дефолту
-        }
+        public int attempts { get; set; }
 
-        public void InputParams(int wtd = 0)
-        {
-            switch (wtd)
-            {
-                case 1:
-                    Print?.Print("Введите первую границу: ");
-                    TmpValues[0] = Input?.Input();
-                    break;
+        public int clues { get; set; }
 
-                case 2:
-                    Print?.Print("Введите вторую границу:");
-                    TmpValues[1] = Input?.Input();
-                    break;
+        private IInputMsg _input = input;
 
-                case 3:
-                    Print?.Print("Укажите сложность игры.\n" +
-                        "1 - Легкая | 100 попыток | 50 подсказок\n" +
-                        "2 - Средняя | 25 попыток | 5 подсказок\n" +
-                        "3 - Хардкор | 10 попыток | 1 подсказка");
-                    TmpValues[2] = Input?.Input();
-                    break;
+        private IOutputMsg _output = output;
 
-                default:
-                    Print?.Print("Введите первую границу: ");
-                    TmpValues[0] = Input?.Input();
-                    Print?.Print("Введите вторую границу:");
-                    TmpValues[1] = Input?.Input();
-                    Print?.Print("Укажите сложность игры.\n" +
-                        "1 - Легкая | 100 попыток | 50 подсказок\n" +
-                        "2 - Средняя | 25 попыток | 5 подсказок\n" +
-                        "3 - Хардкор | 10 попыток | 1 подсказка");
-                    TmpValues[2] = Input?.Input();
-                    break;
-            }
-        }
-
-        private void PrintWelcome()
-        {
-            Print?.Print("Нажмите 'Enter' для продолжения");
-            ConsoleKeyInfo OK;
-            while (true)
-            {
-                OK = Console.ReadKey();
-                if (OK.Key == ConsoleKey.Enter)
-                {
-                    break;
-                }
-                else
-                {
-                    Print?.PrintError("Нажмите 'Enter' для продолжения");
-                }
-            }
-        }
-
-        private double GetValidBorder(int index)
-        {
-            while (true)
-            {
+        public void SetParams() {
+            while (true) {
                 try
                 {
-                    return Convert.ToDouble(TmpValues[index - 1]);
-                }
-                catch (Exception)
-                {
-                    Print?.PrintError("Введите правильное значение");
-                    InputParams(index);
-                }
-            }
-        }
-
-        private int GetValidDifficulty(int index)
-        {
-            while (true)
-            {
-                try
-                {
-                    int Diff = Convert.ToInt32(TmpValues[index - 1]);
-                    DifficultyLevel tmp = new DifficultyLevel(Diff);
-                    return Diff;
-                }
-                catch (Exception)
-                {
-                    Print?.PrintError("Введите правильное значение");
-                    InputParams(index);
-                }
-            }
-        }
-
-        private void ValidateBorders(double first, double second)
-
-        {
-            if (first == second)
-
-            {
-                Print?.Print("Границы не должны быть равными. Попробуйте ещё раз.");
-
-                HandleBorderChange();
-            }
-
-            if (first > second)
-
-            {
-                (first, second) = (second, first);
-            }
-        }
-
-        private void HandleBorderChange()
-        {
-            while (true)
-            {
-                Print?.Print("1 - Изменить первую границу.\n2 - Изменить вторую границу.");
-                try
-                {
-                    ConsoleKeyInfo ChangeBorder = Console.ReadKey();
-                    Print?.Print("\n");
-                    switch (ChangeBorder.Key)
-
+                    minNum = InputParam("Введите минимальное число: ");
+                    maxNum = InputParam("Введите максимальное число: ");
+                    if (maxNum == minNum)
                     {
-                        case ConsoleKey.D1:
-                            InputParams(1);
-                            FirstBorder = GetValidBorder(1);
+                        throw new Exception("Границы не должны совпадать.");
+                    }
+                    difficultyLevel = InputParam("Выберите уровень сложности:\n"+"" +
+                        "1 - легкий (100 попыток, 50 подсказок)\n" + 
+                        "2 - средний (50 попыток, 25 подсказок)\n"+
+                        "3 - хардкор (10 попыток, 1 подсказка)");
+                    if (difficultyLevel < 1 || difficultyLevel > 3) {
+                        throw new Exception("Неверное значение. Повторите попытку.");
+                    }
+
+                    switch (difficultyLevel) {
+                        case 1:
+                            attempts = 100;
+                            clues = 50;
                             break;
 
-                        case ConsoleKey.D2:
-                            InputParams(2);
-                            SecondBorder = GetValidBorder(2);
+                        case 2:
+                            attempts = 50;
+                            clues = 25;
+                            break;
+
+                        case 3:
+                            attempts = 10;
+                            clues = 1;
                             break;
 
                         default:
-                            continue;
+                            break;
                     }
+
+                    return;
                 }
-                catch (Exception error)
-                {
-                    Print?.Print(error.Message);
+                catch (Exception error) { 
+                _output.PrintError(error.Message + "\nПовторите попытку.");
                 }
             }
         }
 
-        public bool CheckParamInputs() // теперь надо это разбить на отдельные методы
-        {
-            PrintWelcome();
-            FirstBorder = GetValidBorder(1);
-            SecondBorder = GetValidBorder(2);
-            GameDifficulty = new DifficultyLevel(GetValidDifficulty(3));
-            ValidateBorders(FirstBorder, SecondBorder);
-            return true;
+
+        public int InputParam(string msg) {
+            while (true)
+            {
+                try {
+                    _output.Print(msg);
+                    var param = Convert.ToInt32(Console.ReadLine());
+                    return param;
+                }
+                catch (Exception error) {
+                    throw new Exception(error.Message);
+                }
+            }
         }
     }
 }

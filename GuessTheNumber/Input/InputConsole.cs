@@ -11,8 +11,7 @@ namespace GuessTheNumber.Input
     {
         public string? Input()
         {
-            string? value = Console.ReadLine();
-            return value;
+            return Console.ReadLine();
         }
     }
 }
