@@ -10,6 +10,7 @@ namespace GuessTheNumber.Output.Interfaces
     {
         void Print(string msg) { }
         void PrintError(string msg) { }
+        void PrintClear() { }
 
     }
 }

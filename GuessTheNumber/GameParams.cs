@@ -41,7 +41,10 @@ namespace GuessTheNumber
                         throw new Exception("Границы не должны совпадать.");
                     }
 
-                    if (maxNum < minNum) { (maxNum, minNum) = (minNum, maxNum); };
+                    if (maxNum < minNum) 
+                    {
+                        (maxNum, minNum) = (minNum, maxNum); 
+                    }
 
                     difficultyLevel = InputParam("Выберите уровень сложности:\n"+"" +
                         "1 - легкий (100 попыток, 10 подсказок)\n" + 

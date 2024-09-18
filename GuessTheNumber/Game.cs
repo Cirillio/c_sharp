@@ -13,7 +13,7 @@ using GuessTheNumber.GameInterfaces;
 
 namespace GuessTheNumber
 {
-    internal class Game (IGameParams _parameters, IRandomNumber _randomNumber, IOutputMsg output, IInputMsg input)
+    internal class Game (IGameParams _parameters, IRandomNumber _randomNumber, IOutputMsg output, IInputMsg input) : IGame
     {
         private IOutputMsg _output = output;
         private IInputMsg _input = input;
@@ -21,19 +21,23 @@ namespace GuessTheNumber
         private readonly IGameParams parameters = _parameters;
         private readonly IRandomNumber randomNumber = _randomNumber;
 
+        private GameNotifier? Notify;
+
         private int guessedNumber;
         private int attempts;
         private int clues;
 
         private bool Victory = false;
 
-        public void StartGame() {
+        public void SetupGame() {
 
             parameters.SetParams();
             attempts = parameters.attempts;
             clues = parameters.clues;
             guessedNumber = randomNumber.GetRandomNumber(parameters);
-            _output.Print("Игра началась.");
+            Notify = new GameNotifier(guessedNumber, parameters.minNum, parameters.maxNum);
+            _output.PrintClear();
+            _output.Print("Игра начата.");
             _output.Print("Сложность: " + parameters.difficultyLevel);
             _output.Print("Границы: [" + parameters.minNum + "] - [" + parameters.maxNum + "]");
             _output.Print("Количество попыток: " + attempts);
@@ -50,13 +54,21 @@ namespace GuessTheNumber
                 {
                     _output.Print("Введите число: ");
                     int guessNum = Convert.ToInt32(_input.Input());
+                    attempts--;
 
-                    if(guessNum == guessedNumber) {
-                        _output.Print("Поздравляю! Вы угадали число.");
+
+                    if (guessNum == guessedNumber) {
+                        _output.Print("Победа! Вы угадали число.");
                         Victory = true;
                         _output.Print("Игра окончена. Спасибо за участие.");
                         break;
                     }
+
+                    _output.Print(Notify.GetNotify(guessNum));
+
+                    _output.Print("Границы: [" + parameters.minNum + "] - [" + parameters.maxNum + "]");
+                    _output.Print("Количество попыток: " + attempts);
+                    _output.Print("Количество подсказок: " + clues);
 
                     _output.Print("Выберите действие:");
                     _output.Print("1 - Ввести число\n2 - Подсказка\n3 - Выход");
@@ -68,7 +80,6 @@ namespace GuessTheNumber
                         {
 
                             case ConsoleKey.D1:
-                                attempts--;
                                 break;
                             case ConsoleKey.D2:
                                 if(clues == 0) {
@@ -76,8 +87,7 @@ namespace GuessTheNumber
                                     break;
                                 }
                                 clues--;
-                                _output.Print("Подсказка: " + (guessedNumber - guessNum));
-                                attempts--;
+                                _output.Print(Notify.GetClue());
                                 break;
                             case ConsoleKey.D3:
                                 _output.Print("Игра завершена.");

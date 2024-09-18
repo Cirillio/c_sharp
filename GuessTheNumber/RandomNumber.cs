@@ -11,7 +11,7 @@ namespace GuessTheNumber
     {
         public int GetRandomNumber(IGameParams _parameters)
         {
-            return Random.Shared.Next(_parameters.minNum, _parameters.maxNum);
+            return Random.Shared.Next(_parameters.minNum, _parameters.maxNum+1);
         }
     }
 }

@@ -13,25 +13,9 @@ namespace GuessTheNumber
     {
         static void Main(string[] args)
         {
-            var services = new ServiceCollection()
-                .AddSingleton<IInputMsg, InputConsole>()
-                .AddSingleton<IOutputMsg, OutPutConsole>()
-                .AddSingleton<IGameParams, GameParams>()
-                .AddSingleton<IRandomNumber, RandomNumber>()
-                .AddSingleton<Game>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-
-            var Game = serviceProvider.GetService<Game>();
-
-            Game?.StartGame();
-            Console.WriteLine("Для продолжения нажмите любую клавишу");
-            Console.ReadKey(true);
-            Console.Clear();
-            Game?.PlayGame();
-
-
+            NewGame GuessTheNumber = new NewGame();
+            GuessTheNumber.Setup();
+            GuessTheNumber.Play();
 
 
         }
