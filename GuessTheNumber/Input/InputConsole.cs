@@ -13,5 +13,9 @@ namespace GuessTheNumber.Input
         {
             return Console.ReadLine();
         }
+        public ConsoleKeyInfo Press()
+        {
+            return Console.ReadKey(true);
+        }
     }
 }

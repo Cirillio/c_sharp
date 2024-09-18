@@ -10,10 +10,11 @@ using Microsoft.VisualBasic;
 using Microsoft.Extensions.DependencyInjection;
 using GuessTheNumber.Input.Interfaces;
 using GuessTheNumber.Output.Interfaces;
+using GuessTheNumber.GameInterfaces;
 
 namespace GuessTheNumber
 {
-    internal class GameParams (IInputMsg input, IOutputMsg output)
+    internal class GameParams (IInputMsg input, IOutputMsg output) : IGameParams
     {
         public int minNum { get; set; }
 
@@ -33,15 +34,18 @@ namespace GuessTheNumber
             while (true) {
                 try
                 {
-                    minNum = InputParam("Введите минимальное число: ");
-                    maxNum = InputParam("Введите максимальное число: ");
+                    minNum = InputParam("Введите первую границу: ");
+                    maxNum = InputParam("Введите вторую границу: ");
                     if (maxNum == minNum)
                     {
                         throw new Exception("Границы не должны совпадать.");
                     }
+
+                    if (maxNum < minNum) { (maxNum, minNum) = (minNum, maxNum); };
+
                     difficultyLevel = InputParam("Выберите уровень сложности:\n"+"" +
-                        "1 - легкий (100 попыток, 50 подсказок)\n" + 
-                        "2 - средний (50 попыток, 25 подсказок)\n"+
+                        "1 - легкий (100 попыток, 10 подсказок)\n" + 
+                        "2 - средний (50 попыток, 5 подсказок)\n"+
                         "3 - хардкор (10 попыток, 1 подсказка)");
                     if (difficultyLevel < 1 || difficultyLevel > 3) {
                         throw new Exception("Неверное значение. Повторите попытку.");
@@ -50,12 +54,12 @@ namespace GuessTheNumber
                     switch (difficultyLevel) {
                         case 1:
                             attempts = 100;
-                            clues = 50;
+                            clues = 10;
                             break;
 
                         case 2:
                             attempts = 50;
-                            clues = 25;
+                            clues = 5;
                             break;
 
                         case 3:
@@ -81,7 +85,7 @@ namespace GuessTheNumber
             {
                 try {
                     _output.Print(msg);
-                    var param = Convert.ToInt32(Console.ReadLine());
+                    var param = Convert.ToInt32(_input.Input());
                     return param;
                 }
                 catch (Exception error) {

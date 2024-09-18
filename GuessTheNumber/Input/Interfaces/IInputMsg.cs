@@ -9,5 +9,7 @@ namespace GuessTheNumber.Input.Interfaces
     internal interface IInputMsg
     {
         public string? Input();
+
+        public ConsoleKeyInfo Press();
     }
 }

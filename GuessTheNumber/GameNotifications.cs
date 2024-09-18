@@ -16,8 +16,6 @@ namespace GuessTheNumber
 
         public static string End() => "Игра закончилась.";
 
-        public static string Params() => "Настройки игры:";
-
         public static string Hot() => "Горячо.";
 
         public static string Cold() => "Холодно.";
@@ -38,8 +36,10 @@ namespace GuessTheNumber
 
         public static string Odd() => "Число нечетное.";
 
-        public static string MoreThanZero() => "Число больше нуля";
+        public static string MoreThanZero() => "Число больше нуля.";
 
-        public static string LessThanZero() => "Число меньше нуля";
+        public static string LessThanZero() => "Число меньше нуля.";
+
+        public static string BeyondBorders() => "Вы вышли за границы.";
     }
 }
