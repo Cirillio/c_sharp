@@ -16,7 +16,6 @@ namespace GuessTheNumber
 
         private int lastNum;
         private int lastDiff;
-        private int newDiff;
 
         public GameNotifier(int randomNumber, int _minNum, int _maxNum) {
 
@@ -52,12 +51,12 @@ namespace GuessTheNumber
 
         public string GetClue() {
             int clues = 2;
+
             if (minNum < 0 && maxNum > 0) {
                 clues++;
             }
 
-            int randomClue = Random.Shared.Next(1, clues+1);
-            switch (randomClue) {
+            switch (Random.Shared.Next(1, clues+1)) {
                 case 1:
                     if (searchedX < half)
                     {
@@ -165,7 +164,6 @@ namespace GuessTheNumber
                             }
                         }
                     }
-
             }
             return "";
         }

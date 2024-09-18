@@ -6,18 +6,43 @@ using GuessTheNumber.Input.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using GuessTheNumber.GameInterfaces;
 
-
 namespace GuessTheNumber
 {
-    class GuessGame
+    public class GuessGame
     {
-        static void Main(string[] args)
+
+        ServiceCollection services = new ServiceCollection();
+        ServiceProvider serviceProvider;
+        IGame? Game;
+        IOutputMsg? Output;
+        IInputMsg? Input;
+
+
+        public GuessGame()
         {
-            NewGame GuessTheNumber = new NewGame();
-            GuessTheNumber.Setup();
-            GuessTheNumber.Play();
+            services.AddSingleton<IInputMsg, InputConsole>()
+            .AddSingleton<IOutputMsg, OutPutConsole>()
+            .AddSingleton<IGameParams, GameParams>()
+            .AddSingleton<IRandomNumber, RandomNumber>()
+            .AddSingleton<Game>();
 
+            serviceProvider = services.BuildServiceProvider();
 
+            Game = serviceProvider.GetService<Game>();
+            Output = serviceProvider.GetService<IOutputMsg>();
+            Input = serviceProvider.GetService<IInputMsg>();
+
+        }
+
+        public void Setup() {
+            Game?.SetupGame();
+            Output?.Print("Для продолжения нажмите любую клавишу...");
+            Input?.Press();
+            Output?.PrintClear();
+        }
+
+        public void Play() { 
+            Game?.PlayGame();
         }
     }
 }
